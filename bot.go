@@ -2,12 +2,34 @@ package main
 
 import (
 	"log"
+	"os"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"gopkg.in/yaml.v3"
 )
 
+type config struct {
+	Telegram struct {
+		Token string `yaml:"token"`
+	} `yaml:"telegram"`
+}
+
 func main() {
-	bot, err := tgbotapi.NewBotAPI("BOtTokenShouldBeThere")
+	configurationFileName := "config.yaml"
+	file, err := os.Open(configurationFileName)
+	if err != nil {
+		log.Panic(err)
+	}
+	defer file.Close()
+
+	var conf config
+	decoder := yaml.NewDecoder(file)
+	err = decoder.Decode(&conf)
+	if err != nil {
+		log.Panic(err)
+	}
+	log.Printf("config file is: %s", conf)
+	bot, err := tgbotapi.NewBotAPI(conf.Telegram.Token)
 	if err != nil {
 		log.Panic(err)
 	}
