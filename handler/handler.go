@@ -79,6 +79,11 @@ func HandleMessage(update tgbotapi.Update, bot tgbotapi.BotAPI, db *sql.DB, isTe
 					update.Message.Date,
 				) // check if create user if not exists
 				log.Printf("Affected row is: %+v", affectedRow)
+				if update.Message.Chat.Type == "group" {
+					// initiate group
+					// add user to the group
+					// add mentioned user to the group
+				}
 			}
 		default:
 			msg.Text = "command not implemented"

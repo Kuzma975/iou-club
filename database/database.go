@@ -68,7 +68,7 @@ func InitializeTable(db *sql.DB, tableName string) {
 
 func CreateUser(db *sql.DB, userId int64, userName, firstName, lastName string, date int) int64 {
 	InitializeTable(db, "user_info")
-	insert := fmt.Sprintf("INSERT INTO user_info(user_id, user_name, first_name, last_name, joined) VALUES (?, ?, ?, ?, ?)")
+	insert := fmt.Sprintf("INSERT OR REPLACE INTO user_info(user_id, user_name, first_name, last_name, joined) VALUES (?, ?, ?, ?, ?)")
 	stmt, err := db.Prepare(insert)
 	logging.CheckErr(err)
 	res, err := stmt.Exec(userId, userName, firstName, lastName, date)
