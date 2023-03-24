@@ -79,6 +79,14 @@ func CreateUser(db *sql.DB, userId int64, userName, firstName, lastName string, 
 	return rows
 }
 
+// TODO Create user structure
+func GetUserIdBy(db *sql.DB, field, userName string) (int64, error) {
+	var userID int64
+	err := db.QueryRow("SELECT user_id FROM user_info WHERE ?=?", field, userName).Scan(&userID)
+	logging.CheckErr(err)
+	return userID, nil
+}
+
 // func GetUpdates() (telegram.Result, error) {
 // 	client := http.Client{}
 // 	responce, err := client.Get("https://api.telegram.org/token/getUpdates")

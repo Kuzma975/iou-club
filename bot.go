@@ -54,7 +54,7 @@ func main() {
 	// log.Printf("config file is: %s", conf)
 	bot, err := tgbotapi.NewBotAPI(conf.Telegram.Token)
 	if err != nil {
-		log.Panic(err)
+		log.Panic("Error occured during creating new bot client: ", err)
 	}
 
 	bot.Debug = conf.Telegram.Debug

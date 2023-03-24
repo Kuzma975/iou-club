@@ -2,6 +2,7 @@ package handler
 
 import (
 	"database/sql"
+	"fmt"
 	"kuzma975/iou-club/database"
 	"log"
 	"strconv"
@@ -59,6 +60,41 @@ func HandleMessage(update tgbotapi.Update, bot tgbotapi.BotAPI, db *sql.DB, isTe
 			msg.Text = "/custom command"
 		case "custom":
 			msg.Text = "test is passed"
+		case "add_user":
+			msg.Text = "try to add new user user"
+			for _, ent := range update.Message.Entities {
+				log.Printf("Checking entity: %+v", ent.Type)
+				log.Printf("Checking if entity is mention: %+v", ent.IsMention())
+				if ent.IsMention() {
+					log.Printf("======= Mention ========")
+					log.Printf("Offset: %+v", ent.Offset)
+					log.Printf("Type is: %+v", ent.Type)
+					log.Printf("Length is: %+v", ent.Length)
+					log.Printf("Url is: %+v", ent.URL)
+					log.Printf("User is: %+v", ent.User)
+					log.Printf("Mention in: %+v", update.Message.Text[ent.Offset:ent.Offset+ent.Length])
+					userId, _ := database.GetUserIdBy(db, "user_name", update.Message.Text[ent.Offset+1:ent.Offset+ent.Length])
+					log.Printf("user id from db: %+v", userId)
+					log.Printf("+++++++++++++++")
+				} else if ent.Type == "text_mention" {
+					log.Printf("======= Mention Text ========")
+					log.Printf("Offset: %+v", ent.Offset)
+					log.Printf("Type is: %+v", ent.Type)
+					log.Printf("Length is: %+v", ent.Length)
+					log.Printf("Url is: %+v", ent.URL)
+					log.Printf("User is: %+v", ent.User)
+					log.Printf("Mention in: %+v", update.Message.Text[ent.Offset:ent.Offset+ent.Length])
+					log.Printf("+++++++++++++++")
+					log.Printf("user id is %+v", ent.User.ID)
+					userId, _ := database.GetUserIdBy(db, "first_name", ent.User.FirstName)
+					log.Printf("user id from db: %+v", userId)
+					msg.Text = fmt.Sprintf("Is this correct user: [%s](tg://user?id=%d)", ent.User.FirstName, userId)
+					// [inline mention of a user](tg://user?id=123456789)
+					// msg.Entities = append(msg.Entities, )
+					msg.ParseMode = "MarkdownV2"
+					// msg.Entities = []tgbotapi.MessageEntity{msgEnt}
+				}
+			}
 		case "start":
 			if update.Message.From != nil {
 				log.Printf("======= FROM ========")
